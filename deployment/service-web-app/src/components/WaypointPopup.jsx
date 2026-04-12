@@ -8,7 +8,7 @@ export default function WaypointPopup({ waypoints, onClose }) {
         transform: "translate(-50%, -50%)",
         background: "white",
         width: "400px",
-        height: "500px",          // ✅ fixed height
+        height: "500px",          
         zIndex: 2000,
         borderRadius: "10px",
         padding: "16px",
@@ -23,8 +23,8 @@ export default function WaypointPopup({ waypoints, onClose }) {
       {/* SCROLLABLE CONTENT */}
       <div
         style={{
-          flex: 1,                 // takes remaining space
-          overflowY: "auto",      // ✅ scroll enabled
+          flex: 1,                 
+          overflowY: "auto",      
           border: "1px solid #ddd",
           padding: "8px",
           borderRadius: "6px",
@@ -34,9 +34,9 @@ export default function WaypointPopup({ waypoints, onClose }) {
 
         {waypoints.map((wp) => (
           <div key={wp.wp_id} style={{ marginBottom: "10px" }}>
-            <b>wp_id:</b> {wp.wp_id} <br />
-            <b>lat:</b> {wp.lat.toFixed(6)} <br />
-            <b>lng:</b> {wp.lng.toFixed(6)}
+            <b>Waypoint ID:</b> {wp.wp_id} <br />
+            <b>Latitude:</b> {wp.lat.toFixed(6)} <br />
+            <b>Longitude:</b> {wp.lng.toFixed(6)}
             <hr />
           </div>
         ))}

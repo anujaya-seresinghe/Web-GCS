@@ -183,7 +183,7 @@ export default function MapView() {
                 const marker = e.target;
                 const newPos = marker.getLatLng();
 
-                // ✅ Update waypoint state
+               
                 setWaypoints((prev) =>
                   prev.map((p) =>
                     p.wp_id === wp.wp_id
@@ -192,7 +192,7 @@ export default function MapView() {
                   )
                 );
 
-                // ✅ MQTT payload
+           
                 const payload = {
                   sys_id: 0,
                   wp_id: wp.wp_id,

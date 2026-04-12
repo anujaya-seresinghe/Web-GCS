@@ -7,6 +7,11 @@ bash startGCS.sh
 ## To access the web app: 
 http://172.20.0.13:3000/
 
+## To shut down docker containers, go to deployment and run:
+```
+bash stopGCS.sh
+```
+
 # Testing the MAVLink Interface
 ## MAVLink interceptor
 Access the docker container service-test. While inside the container, run 

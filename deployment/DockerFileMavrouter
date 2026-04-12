@@ -1,0 +1,38 @@
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y \
+    git \
+    g++ \
+    cmake \
+    ninja-build \
+    pkg-config \
+    python3 \
+    python3-pip \
+    meson \
+    systemd \
+    libsystemd-dev \
+    libasio-dev \
+    libtinyxml2-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# FORCE pkg-config to see system libs
+
+COPY service-mavrouter/entrypoint.sh .
+RUN chmod +x entrypoint.sh
+
+ENV PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/share/pkgconfig
+
+WORKDIR /src
+
+
+RUN git clone --recurse-submodules https://github.com/mavlink-router/mavlink-router.git
+
+WORKDIR /src/mavlink-router
+
+RUN meson setup build && \
+    ninja -C build && \
+    ninja -C build install
+
+ENTRYPOINT ["/entrypoint.sh"]

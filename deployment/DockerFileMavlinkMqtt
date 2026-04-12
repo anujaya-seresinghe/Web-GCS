@@ -1,0 +1,30 @@
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt update && apt install -y \
+    build-essential \
+    libmosquitto-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# 👇 IMPORTANT: paths include service-mqtt/
+COPY service-mavlink-mqtt/udp_to_mqtt.c .
+COPY service-mavlink-mqtt/mqtt_to_udp.c .
+COPY libraries/mavlink ./mavlink
+
+COPY service-mavlink-mqtt/entrypoint.sh .
+RUN chmod +x entrypoint.sh
+
+
+# compile
+RUN gcc udp_to_mqtt.c -o udp_to_mqtt \
+    -I./mavlink \
+    -lmosquitto
+
+RUN gcc mqtt_to_udp.c -o mqtt_to_udp \
+    -I./mavlink \
+    -lmosquitto
+
+CMD ["./entrypoint.sh"]

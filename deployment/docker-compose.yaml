@@ -1,0 +1,92 @@
+version: "3.8"
+
+services:
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./configs/mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf
+    restart: unless-stopped
+    networks:
+      gcs_network:
+        ipv4_address: 172.20.0.12
+  mavlink-bridge:
+    build:
+      context: .
+      dockerfile: DockerFileMavlinkMqtt
+    container_name: mavlink_bridge
+    depends_on:
+      - mosquitto
+      - mavrouter
+    #ports:
+      #- "18550:18550/udp"
+      #- "18560:18560/udp"
+    restart: unless-stopped
+    networks:
+      gcs_network:
+        ipv4_address: 172.20.0.11
+  mavrouter:
+    build:
+      context: .
+      dockerfile: DockerFileMavrouter
+    container_name: mavrouter
+    depends_on:
+      - mosquitto
+    volumes:
+      - ./configs/mavrouter/main.conf:/etc/mavlink-router/main.conf
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    #command: mavlink-routerd -c /etc/mavlink-router/main.conf
+    restart: unless-stopped
+    networks:
+      gcs_network:
+        ipv4_address: 172.20.0.10
+    #ports:
+     # - "18590:18590/udp"
+     
+  service-web:
+      build:
+        context: .
+        dockerfile: DockerFileWebApp
+      ports:
+        - "8080:3000"
+
+      volumes:
+        - ./service-web-app/src:/app/src
+        - ./service-web-app/public:/app/public
+
+      environment:
+        - CHOKIDAR_USEPOLLING=true
+
+      stdin_open: true
+      tty: true
+      networks:
+        gcs_network:
+          ipv4_address: 172.20.0.13
+
+  service-test:
+      build:
+        context: .
+        dockerfile: DockerFileTest
+      container_name: gcs_test
+      depends_on:
+            - mavlink-bridge
+            - mavrouter
+      #restart: unless-stopped
+      networks:
+        gcs_network:
+          ipv4_address: 172.20.0.14
+
+
+
+
+
+networks:
+  gcs_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

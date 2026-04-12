@@ -1,10 +1,10 @@
-# Wep App
+# Setting Up
 
-## Build and run the Docker containers with:
+## To build and run the Docker containers, go to deployment and run:
 ```
-bash deployment/startGCS.sh
+bash startGCS.sh
 ```
-To access the web app: 
+## To access the web app: 
 http://172.20.0.13:3000/
 
 # Testing the MAVLink Interface

@@ -9,7 +9,6 @@ RUN apt update && apt install -y \
 
 WORKDIR /app
 
-# 👇 IMPORTANT: paths include service-mqtt/
 COPY service-mavlink-mqtt/udp_to_mqtt.c .
 COPY service-mavlink-mqtt/mqtt_to_udp.c .
 COPY libraries/mavlink ./mavlink
